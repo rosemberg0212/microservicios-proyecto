@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: user-service
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:8081
+#spring.data.mongodb.uri=mongodb+srv://servicios:vqRJzSZPenj2fzQy@cluster0.vgpk1.mongodb.net/microServicios
