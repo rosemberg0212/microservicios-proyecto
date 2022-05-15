@@ -5,4 +5,10 @@ spring:
     config:
       enabled: true
       uri: http://localhost:8081
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/tutoreal-realm
+
 #spring.data.mongodb.uri=mongodb+srv://servicios:vqRJzSZPenj2fzQy@cluster0.vgpk1.mongodb.net/microServicios
