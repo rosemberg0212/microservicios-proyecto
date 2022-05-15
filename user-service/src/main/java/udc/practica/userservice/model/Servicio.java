@@ -11,5 +11,6 @@ public class Servicio {
     private String name;
     private String type;
     private String description;
+    private Boolean state;
     private int userId;
 }

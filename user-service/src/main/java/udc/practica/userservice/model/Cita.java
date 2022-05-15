@@ -11,5 +11,6 @@ public class Cita {
     private String typeService;
     private String date;
     private String moment;
+    private Boolean state;
     private int userId;
 }
