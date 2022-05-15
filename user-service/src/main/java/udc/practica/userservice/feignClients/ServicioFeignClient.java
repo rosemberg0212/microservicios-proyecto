@@ -9,7 +9,7 @@ import udc.practica.userservice.model.Servicio;
 
 import java.util.List;
 
-@FeignClient(name = "servicio-service", url = "http://localhost:8002", path = "/servicios")
+@FeignClient(name = "servicio-service", path = "/servicios")
 public interface ServicioFeignClient {
 
     @PostMapping()

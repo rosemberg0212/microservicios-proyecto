@@ -6,7 +6,7 @@ import udc.practica.userservice.model.Cita;
 
 import java.util.List;
 
-@FeignClient(name = "cita-service", url = "http://localhost:8003", path = "/citas")
+@FeignClient(name = "cita-service", path = "/citas")
 //@RequestMapping("/citas")
 public interface CitaFeignClient {
 
