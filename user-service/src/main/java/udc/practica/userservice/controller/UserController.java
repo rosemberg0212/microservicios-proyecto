@@ -1,6 +1,8 @@
 package udc.practica.userservice.controller;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import udc.practica.userservice.entity.User;
@@ -41,6 +43,7 @@ public class UserController {
         return ResponseEntity.ok(userNew);
     }
 
+    @CircuitBreaker(name = "serviciosCB", fallbackMethod = "fallbackGetServicios")
     @GetMapping("/servicios/{userId}")
     public ResponseEntity<List<Servicio>> getServicios(@PathVariable("userId") int userId){
         User user = userService.getUserById(userId);
@@ -51,6 +54,17 @@ public class UserController {
         return ResponseEntity.ok(servicios);
     }
 
+    @CircuitBreaker(name = "serviciosCB", fallbackMethod = "fallbackSaveServicio")
+    @PostMapping("/saveservicio/{userId}")
+    public ResponseEntity<Servicio> saveServicio(@PathVariable("userId") int userId, @RequestBody Servicio servicio){
+        if(userService.getUserById(userId) == null){
+            return ResponseEntity.notFound().build();
+        }
+        Servicio servicioNew = userService.saveServicio(userId, servicio);
+        return ResponseEntity.ok(servicio);
+    }
+
+    @CircuitBreaker(name = "citasCB", fallbackMethod = "fallbackGetCitas")
     @GetMapping("/citas/{userId}")
     public ResponseEntity<List<Cita>> getCitas(@PathVariable("userId") int userId){
         User user = userService.getUserById(userId);
@@ -61,6 +75,7 @@ public class UserController {
         return ResponseEntity.ok(citas);
     }
 
+    @CircuitBreaker(name = "citasCB", fallbackMethod = "fallbackSaveCita")
     @PostMapping("/savecita/{userId}")
     public ResponseEntity<Cita> saveCita(@PathVariable("userId") int userId, @RequestBody Cita cita){
         if(userService.getUserById(userId) == null){
@@ -70,12 +85,19 @@ public class UserController {
         return ResponseEntity.ok(cita);
     }
 
-    @PostMapping("/saveservicio/{userId}")
-    public ResponseEntity<Servicio> saveServicio(@PathVariable("userId") int userId, @RequestBody Servicio servicio){
-        if(userService.getUserById(userId) == null){
-            return ResponseEntity.notFound().build();
-        }
-        Servicio servicioNew = userService.saveServicio(userId, servicio);
-        return ResponseEntity.ok(servicio);
+    private ResponseEntity<List<Servicio>> fallbackGetServicios(@PathVariable("userId") int userId, RuntimeException e){
+        return new ResponseEntity("El usuario" + userId + "esta creando los servicios", HttpStatus.OK);
+    }
+
+    private ResponseEntity<Servicio> fallbackSaveServicio(@PathVariable("userId") int userId, @RequestBody Servicio servicio, RuntimeException e){
+        return new ResponseEntity("El usuario" + userId + "no puede crear servicios en este momento", HttpStatus.OK);
+    }
+
+    private ResponseEntity<List<Cita>> fallbackGetCitas(@PathVariable("userId") int userId, RuntimeException e){
+        return new ResponseEntity("El usuario" + userId + "esta creando las citas", HttpStatus.OK);
+    }
+
+    private ResponseEntity<Cita> fallbackSaveCita(@PathVariable("userId") int userId, @RequestBody Cita cita, RuntimeException e){
+        return new ResponseEntity("El usuario" + userId + "no puede crear citas en este momento", HttpStatus.OK);
     }
 }
