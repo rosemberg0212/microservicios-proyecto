@@ -1,6 +1,12 @@
 package udc.practica.userservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import udc.practica.userservice.entity.User;
@@ -40,14 +46,19 @@ public class UserService {
         return userNew;
     }
 
-    public List<Servicio> getServicio(int userId){
-        List<Servicio> servicios = restTemplate.getForObject("http://servicio-service/servicios/byuser/" + userId, List.class);
-       return servicios;
+    public List getServicio(int userId){
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer" + jwt.getTokenValue());
+        ResponseEntity<List> servicios = restTemplate.exchange("http://servicio-service/servicios/byuser/" + userId, HttpMethod.GET, new HttpEntity<>(httpHeaders), List.class);
+       return servicios.getBody();
     }
 
-    public List<Cita> getCita(int userId){
-        List<Cita> citas = restTemplate.getForObject("http://cita-service/citas/byuser/" + userId, List.class);
-        return citas;
+    public List getCita(int userId){
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        ResponseEntity<List> citas = restTemplate.exchange("http://cita-service/citas/byuser/" + userId, HttpMethod.GET, new HttpEntity<>(httpHeaders), List.class);
+        return citas.getBody();
     }
 
     public Cita saveCita(int userId, Cita cita){
