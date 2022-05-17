@@ -57,6 +57,7 @@ public class UserService {
     public List getCita(int userId){
         Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer" + jwt.getTokenValue());
         ResponseEntity<List> citas = restTemplate.exchange("http://cita-service/citas/byuser/" + userId, HttpMethod.GET, new HttpEntity<>(httpHeaders), List.class);
         return citas.getBody();
     }

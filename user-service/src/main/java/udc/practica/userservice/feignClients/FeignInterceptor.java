@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FeignInterceptor implements RequestInterceptor {
     @Override
-    public void apply(RequestTemplate template){
+    public void apply(RequestTemplate requestTemplate) {
         Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        template.header("Authorization", "Bearer" + jwt.getTokenValue());
+        requestTemplate.header("Authorization", "Bearer" + jwt.getTokenValue());
     }
 }

@@ -54,7 +54,7 @@ public class UserController {
         return ResponseEntity.ok(servicios);
     }
 
-    @CircuitBreaker(name = "serviciosCB", fallbackMethod = "fallbackSaveServicio")
+    //@CircuitBreaker(name = "serviciosCB", fallbackMethod = "fallbackSaveServicio")
     @PostMapping("/saveservicio/{userId}")
     public ResponseEntity<Servicio> saveServicio(@PathVariable("userId") int userId, @RequestBody Servicio servicio){
         if(userService.getUserById(userId) == null){
@@ -89,9 +89,9 @@ public class UserController {
         return new ResponseEntity("El usuario" + userId + "esta creando los servicios", HttpStatus.OK);
     }
 
-    private ResponseEntity<Servicio> fallbackSaveServicio(@PathVariable("userId") int userId, @RequestBody Servicio servicio, RuntimeException e){
+    /*private ResponseEntity<Servicio> fallbackSaveServicio(@PathVariable("userId") int userId, @RequestBody Servicio servicio, RuntimeException e){
         return new ResponseEntity("El usuario" + userId + "no puede crear servicios en este momento", HttpStatus.OK);
-    }
+    }*/
 
     private ResponseEntity<List<Cita>> fallbackGetCitas(@PathVariable("userId") int userId, RuntimeException e){
         return new ResponseEntity("El usuario" + userId + "esta creando las citas", HttpStatus.OK);
