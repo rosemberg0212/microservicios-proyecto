@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8088
 
 eureka:
   client:
@@ -29,3 +29,7 @@ spring:
           uri: lb://cita-service
           predicates:
             - Path=/citas/**
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
